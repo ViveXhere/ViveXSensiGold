@@ -52,15 +52,11 @@
         <div class="offer-label">LIMITED TIME OFFER</div>
         <div class="price-line"><span class="old-price">₹79</span><strong>₹49</strong></div>
         <p class="muted">One-time payment for premium access</p>
-        
-<div class="payment-placeholder" id="qrPlaceholder">
-  <img
-    src="assets/qr.png"
-    alt="Payment QR Code"
-    class="payment-qr"
-  />
-</div>
-
+        <div class="payment-placeholder" id="qrPlaceholder">
+          <img src="assets/qr.png" alt="Payment QR code" class="payment-qr"
+               onerror="this.hidden=true;document.getElementById('qrLoadError').hidden=false;">
+          <p id="qrLoadError" class="qr-load-error" hidden>QR image not found. Check that the file is named qr.png inside the assets folder.</p>
+        </div>
         <div class="upi-row">
           <div>
             <span class="field-label">UPI ID</span>
