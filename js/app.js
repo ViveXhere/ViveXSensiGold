@@ -1,7 +1,8 @@
+
 (() => {
   "use strict";
 
-  // ===== CONFIGURATION =====
+  // ========== CONFIG ==========
   const CONFIG = {
     verifyApi: "https://script.google.com/macros/s/AKfycbxejo41XCZAECqxPviHVpiZnLdcLAEmVxEQ4utRRP47NAlol24sWuCbJjxeCVXMcOT3ng/exec",
     tutorialUrl: "https://www.youtube.com/",
@@ -13,28 +14,16 @@
   };
 
   const BRANDS = [
-    "Samsung", "Realme", "Vivo", "OPPO", "Xiaomi", "Redmi", "OnePlus",
-    "Motorola", "Infinix", "Tecno", "iQOO", "Apple", "POCO", "Nothing",
-    "Honor", "Google Pixel"
+    "Samsung", "Realme", "Vivo", "OPPO", "Xiaomi", "Redmi",
+    "OnePlus", "Motorola", "Infinix", "Tecno", "iQOO",
+    "Apple", "POCO", "Nothing", "Honor", "Google Pixel"
   ];
 
   const BRAND_FACTOR = {
-    "Samsung": 0,
-    "Realme": 2,
-    "Vivo": 2,
-    "OPPO": 1,
-    "Xiaomi": 3,
-    "Redmi": 3,
-    "OnePlus": 4,
-    "Motorola": 0,
-    "Infinix": 3,
-    "Tecno": 3,
-    "iQOO": 5,
-    "Apple": -3,
-    "POCO": 4,
-    "Nothing": 1,
-    "Honor": 1,
-    "Google Pixel": -2
+    Samsung: 0, Realme: 2, Vivo: 2, OPPO: 1,
+    Xiaomi: 3, Redmi: 3, OnePlus: 4, Motorola: 0,
+    Infinix: 3, Tecno: 3, iQOO: 5, Apple: -3,
+    POCO: 4, Nothing: 1, Honor: 1, "Google Pixel": -2
   };
 
   const state = {
@@ -46,7 +35,6 @@
     screenHeight: 0,
     dpr: 1,
     scanned: false,
-    lastPage: "tab-sensi",
     dropdownValues: {
       brand: "POCO",
       ram: "4",
@@ -56,77 +44,61 @@
     storageChosen: false
   };
 
-  const $ = (id) => document.getElementById(id);
-
-  const views = Array.from(
-    document.querySelectorAll(".view")
-  );
-
-  const navItems = Array.from(
-    document.querySelectorAll(".nav-item")
-  );
-
-  const innerPages = new Set([
-    "page-verify",
-    "page-device",
-    "page-scan",
-    "page-results",
-    "page-loading",
-    "page-boost",
-    "page-payment-form",
-    "page-payment-done"
-  ]);
-
+  const $ = id => document.getElementById(id);
   const pageStack = [];
 
+  // ========== NAVIGATION ==========
+
   function showView(id, push = true) {
-    const target = $(id);
-
-    if (!target) {
-      console.error("View not found:", id);
-      return;
-    }
-
-    const current = views.find(
-      view => view.classList.contains("active")
-    );
+    const views = [...document.querySelectorAll(".view")];
+    const current = views.find(v => v.classList.contains("active"));
 
     if (current && current.id !== id && push) {
       pageStack.push(current.id);
     }
 
-    views.forEach(view => {
-      view.classList.toggle("active", view.id === id);
-    });
+    views.forEach(v => v.classList.toggle("active", v.id === id));
 
-    const tabId = id.startsWith("tab-") ? id : null;
-
-    navItems.forEach(button => {
-      button.classList.toggle(
+    document.querySelectorAll(".nav-item").forEach(btn => {
+      btn.classList.toggle(
         "active",
-        tabId === `tab-${button.dataset.tab}`
+        id === `tab-${btn.dataset.tab}`
       );
     });
 
-    window.scrollTo({
-      top: 0,
-      behavior: "instant"
-    });
+    window.scrollTo({ top: 0, behavior: "instant" });
   }
 
   function back() {
-    const previous = pageStack.pop();
-
-    if (previous && $(previous)) {
-      showView(previous, false);
-    } else {
-      showView("tab-sensi", false);
-    }
+    showView(pageStack.pop() || "tab-sensi", false);
   }
 
   function goTab(tab) {
     pageStack.length = 0;
     showView(`tab-${tab}`, false);
+  }
+
+  function openUrl(url) {
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  // ========== DEVICE ID ==========
+
+  function makeRandomId() {
+    const bytes = new Uint8Array(16);
+
+    if (window.crypto?.getRandomValues) {
+      window.crypto.getRandomValues(bytes);
+    } else {
+      for (let i = 0; i < bytes.length; i++) {
+        bytes[i] = Math.floor(Math.random() * 256);
+      }
+    }
+
+    return Array.from(
+      bytes,
+      b => b.toString(16).padStart(2, "0")
+    ).join("");
   }
 
   function getDeviceId() {
@@ -147,93 +119,49 @@
     return id;
   }
 
-  function makeRandomId() {
-    const bytes = new Uint8Array(16);
-
-    if (
-      window.crypto &&
-      window.crypto.getRandomValues
-    ) {
-      window.crypto.getRandomValues(bytes);
-    } else {
-      for (let i = 0; i < bytes.length; i++) {
-        bytes[i] = Math.floor(Math.random() * 256);
-      }
-    }
-
-    return Array.from(
-      bytes,
-      byte => byte.toString(16).padStart(2, "0")
-    ).join("");
-  }
+  // ========== SENSITIVITY CALCULATION ==========
 
   function getRamEffect(ram) {
-    const effects = {
-      4: 5,
-      6: 3,
-      8: 1,
-      12: -1,
-      16: -3,
-      24: -5
-    };
-
-    return effects[Number(ram)] ?? 0;
+    return ({
+      4: 5, 6: 3, 8: 1,
+      12: -1, 16: -3, 24: -5
+    })[Number(ram)] ?? 0;
   }
 
   function getStorageEffect(storage) {
-    const effects = {
-      32: 5,
-      64: 3,
-      128: 1,
-      256: -1,
-      512: -3,
-      1024: -5
-    };
-
-    return effects[Number(storage)] ?? 0;
+    return ({
+      32: 5, 64: 3, 128: 1,
+      256: -1, 512: -3, 1024: -5
+    })[Number(storage)] ?? 0;
   }
 
   function clamp(value, min, max) {
-    return Math.max(
-      min,
-      Math.min(max, Math.round(value))
-    );
+    return Math.max(min, Math.min(max, Math.round(value)));
   }
 
   function scanDensity() {
-    // Browser estimate only.
-    // Actual Android system density cannot reliably be read by a webpage.
-
     const dpr = window.devicePixelRatio || 1;
+    const sw = window.screen?.width || window.innerWidth;
+    const sh = window.screen?.height || window.innerHeight;
 
-    const screenWidth =
-      window.screen && window.screen.width
-        ? window.screen.width
-        : window.innerWidth;
-
-    const screenHeight =
-      window.screen && window.screen.height
-        ? window.screen.height
-        : window.innerHeight;
-
-    const width = Math.round(screenWidth * dpr);
-    const height = Math.round(screenHeight * dpr);
-    const estimatedPpi = Math.round(160 * dpr);
+    const width = Math.round(sw * dpr);
+    const height = Math.round(sh * dpr);
+    const ppi = Math.round(160 * dpr);
 
     state.dpr = dpr;
     state.screenWidth = width;
     state.screenHeight = height;
-    state.density = estimatedPpi;
+    state.density = ppi;
     state.scanned = true;
 
     const result = $("scanResult");
 
     if (result) {
       result.classList.add("scanned");
-
       result.innerHTML =
         `<span class="scan-dot"></span>` +
-        `<span>Display estimate ready · ${width} × ${height} px · approx. ${estimatedPpi} PPI</span>`;
+        `<span>Display estimate ready · ${width} × ${height} px · ` +
+        `approx. ${ppi} PPI</span>`;
     }
   }
 
@@ -241,50 +169,32 @@
     const dpr = state.dpr || window.devicePixelRatio || 1;
 
     const width = state.screenWidth ||
-      Math.round(
-        (window.screen?.width || window.innerWidth) * dpr
-      );
+      Math.round((window.screen?.width || window.innerWidth) *
+      (window.devicePixelRatio || 1));
 
     const height = state.screenHeight ||
-      Math.round(
-        (window.screen?.height || window.innerHeight) * dpr
-      );
+      Math.round((window.screen?.height || window.innerHeight) *
+      (window.devicePixelRatio || 1));
 
-    const density = state.density ||
-      Math.round(160 * dpr);
+    const density = state.density || Math.round(160 * dpr);
 
     const resolutionFactor =
-      width * height >= 2500000
-        ? 2
-        : width * height >= 1500000
-          ? 1
-          : 0;
+      width * height >= 2500000 ? 2 :
+      width * height >= 1500000 ? 1 : 0;
 
     const ppiFactor =
-      density >= 400
-        ? -2
-        : density >= 300
-          ? 0
-          : 2;
+      density >= 400 ? -2 :
+      density >= 300 ? 0 : 2;
 
-    const dprFactor =
-      dpr >= 3
-        ? -1
-        : dpr <= 1
-          ? 1
-          : 0;
+    const dprFactor = dpr >= 3 ? -1 : dpr <= 1 ? 1 : 0;
 
     const brandEffect = BRAND_FACTOR[state.brand] ?? 0;
     const ramEffect = getRamEffect(state.ram);
     const storageEffect = getStorageEffect(state.storage);
 
     const totalFactor =
-      resolutionFactor +
-      ppiFactor +
-      dprFactor +
-      brandEffect +
-      ramEffect +
-      storageEffect;
+      resolutionFactor + ppiFactor + dprFactor +
+      brandEffect + ramEffect + storageEffect;
 
     const base = 145 + totalFactor;
 
@@ -295,99 +205,42 @@
       fourX: clamp(base - 12, 70, 180),
       sniper: clamp(base - 45, 40, 140),
       freeLook: clamp(base + 4, 90, 195),
-
-      fireButton: clamp(
-        38 + totalFactor / 2,
-        33,
-        43
-      ),
-
+      fireButton: clamp(38 + totalFactor / 2, 33, 43),
       dpi: clamp(
-        480 -
-          (density - 320) * 0.35 +
-          ramEffect * 4 +
-          storageEffect * 3 +
-          brandEffect * 1.5,
-        400,
-        550
+        480 - (density - 320) * 0.35 +
+        ramEffect * 4 + storageEffect * 3 +
+        brandEffect * 1.5,
+        400, 550
       )
     };
 
-    return {
-      sensitivity,
-      density,
-      width,
-      height
-    };
+    return { sensitivity, density, width, height };
   }
 
   function renderResults() {
     const result = calculateSettings();
 
-    const deviceName = $("resultDeviceName");
-    const brand = $("resultBrand");
-    const ram = $("resultRam");
-    const storage = $("resultStorage");
-    const ppi = $("resultPpi");
+    const values = {
+      resultDeviceName: `${state.brand} · recommended settings`,
+      resultBrand: state.brand,
+      resultRam: `${state.ram} GB`,
+      resultStorage: state.storage === 1024
+        ? "1 TB" : `${state.storage} GB`,
+      resultPpi: `~${result.density}`,
+      generalValue: result.sensitivity.general,
+      redDotValue: result.sensitivity.redDot,
+      twoXValue: result.sensitivity.twoX,
+      fourXValue: result.sensitivity.fourX,
+      sniperValue: result.sensitivity.sniper,
+      freeLookValue: result.sensitivity.freeLook,
+      fireValue: `${result.sensitivity.fireButton}%`,
+      dpiValue: result.sensitivity.dpi
+    };
 
-    if (deviceName) {
-      deviceName.textContent =
-        `${state.brand} · recommended settings`;
-    }
-
-    if (brand) brand.textContent = state.brand;
-    if (ram) ram.textContent = `${state.ram} GB`;
-
-    if (storage) {
-      storage.textContent =
-        state.storage === 1024
-          ? "1 TB"
-          : `${state.storage} GB`;
-    }
-
-    if (ppi) {
-      ppi.textContent = `~${result.density}`;
-    }
-
-    if ($("generalValue")) {
-      $("generalValue").textContent =
-        result.sensitivity.general;
-    }
-
-    if ($("redDotValue")) {
-      $("redDotValue").textContent =
-        result.sensitivity.redDot;
-    }
-
-    if ($("twoXValue")) {
-      $("twoXValue").textContent =
-        result.sensitivity.twoX;
-    }
-
-    if ($("fourXValue")) {
-      $("fourXValue").textContent =
-        result.sensitivity.fourX;
-    }
-
-    if ($("sniperValue")) {
-      $("sniperValue").textContent =
-        result.sensitivity.sniper;
-    }
-
-    if ($("freeLookValue")) {
-      $("freeLookValue").textContent =
-        result.sensitivity.freeLook;
-    }
-
-    if ($("fireValue")) {
-      $("fireValue").textContent =
-        `${result.sensitivity.fireButton}%`;
-    }
-
-    if ($("dpiValue")) {
-      $("dpiValue").textContent =
-        result.sensitivity.dpi;
-    }
+    Object.entries(values).forEach(([id, value]) => {
+      const element = $(id);
+      if (element) element.textContent = value;
+    });
 
     showView("page-results");
   }
@@ -395,50 +248,39 @@
   function beginFindingSettings() {
     if (!state.scanned) return;
 
-    state.brand =
-      state.dropdownValues.brand || state.brand;
-
-    state.ram =
-      Number(state.dropdownValues.ram || 4);
-
-    state.storage =
-      Number(state.dropdownValues.storage || 128);
+    state.brand = state.dropdownValues.brand || state.brand;
+    state.ram = Number(state.dropdownValues.ram || 4);
+    state.storage = Number(state.dropdownValues.storage || 128);
 
     showView("page-loading");
 
-    window.setTimeout(() => {
-      renderResults();
-    }, 1900);
+    window.setTimeout(renderResults, 1900);
   }
+
+  // ========== VERIFICATION ==========
 
   function jsonpVerify(code, deviceId) {
     return new Promise((resolve, reject) => {
-      if (
-        !CONFIG.verifyApi ||
-        !CONFIG.verifyApi.includes("/exec")
-      ) {
-        reject(
-          new Error("Verification service is not configured.")
-        );
+      const api = CONFIG.verifyApi;
+
+      if (!api || !api.includes("/exec")) {
+        reject(new Error("Verification service is not configured."));
         return;
       }
 
       const callbackName =
-        "vivexVerifyCallback_" +
-        Date.now() +
-        "_" +
-        Math.floor(Math.random() * 10000);
+        "vivexCallback_" + Date.now() +
+        "_" + Math.floor(Math.random() * 10000);
 
       const script = document.createElement("script");
+      let finished = false;
 
-      const timeout = window.setTimeout(() => {
-        finish(
-          new Error("Verification timed out. Please try again.")
-        );
-      }, 15000);
+      function finish(error, data) {
+        if (finished) return;
+        finished = true;
 
-      function cleanup() {
-        window.clearTimeout(timeout);
+        window.clearTimeout(timer);
+        script.remove();
 
         try {
           delete window[callbackName];
@@ -446,35 +288,22 @@
           window[callbackName] = undefined;
         }
 
-        script.remove();
+        if (error) reject(error);
+        else resolve(data);
       }
 
-      function finish(error, data) {
-        cleanup();
+      const timer = window.setTimeout(() => {
+        finish(new Error("Verification timed out. Please try again."));
+      }, 15000);
 
-        if (error) {
-          reject(error);
-        } else {
-          resolve(data);
-        }
-      }
-
-      window[callbackName] = data => {
-        finish(null, data);
-      };
-
+      window[callbackName] = data => finish(null, data);
       script.onerror = () => {
-        finish(
-          new Error("Could not contact the verification server.")
-        );
+        finish(new Error("Could not contact the verification server."));
       };
 
-      const separator =
-        CONFIG.verifyApi.includes("?") ? "&" : "?";
+      const separator = api.includes("?") ? "&" : "?";
 
-      script.src =
-        CONFIG.verifyApi +
-        separator +
+      script.src = api + separator +
         "code=" + encodeURIComponent(code) +
         "&device=" + encodeURIComponent(deviceId) +
         "&callback=" + encodeURIComponent(callbackName);
@@ -492,8 +321,7 @@
     const code = input.value.trim();
 
     if (!code) {
-      message.textContent =
-        "Please enter your verification code.";
+      message.textContent = "Please enter your verification code.";
       return;
     }
 
@@ -509,35 +337,24 @@
     message.textContent = "Checking your code…";
 
     try {
-      const result = await jsonpVerify(
-        code,
-        getDeviceId()
-      );
+      const result = await jsonpVerify(code, getDeviceId());
 
-      if (
-        result &&
-        (
-          result.success === true ||
-          result.valid === true ||
-          result.status === "success"
-        )
-      ) {
-        message.textContent =
-          "Code verified successfully.";
-
+      if (result && (
+        result.success === true ||
+        result.valid === true ||
+        result.status === "success"
+      )) {
+        message.textContent = "Code verified successfully.";
         showView("page-device");
       } else {
         message.textContent =
-          (
-            result &&
-            (result.message || result.error)
-          ) ||
+          result?.message ||
+          result?.error ||
           "Invalid code or this code is linked to another device.";
       }
     } catch (error) {
       message.textContent =
-        error.message ||
-        "Verification failed. Please try again.";
+        error.message || "Verification failed. Please try again.";
     } finally {
       if (button) {
         button.disabled = false;
@@ -546,37 +363,24 @@
     }
   }
 
-  function openUrl(url) {
-    if (!url) return;
-
-    window.open(
-      url,
-      "_blank",
-      "noopener,noreferrer"
-    );
-  }
+  // ========== DROPDOWNS ==========
 
   const DROPDOWNS = {
     brand: {
-      options: BRANDS.map(value => ({
-        value,
-        label: value
-      })),
+      options: BRANDS.map(v => ({ value: v, label: v })),
       selectedId: "brandSelectedLabel",
       menuId: "brandOptions",
       initial: "POCO"
     },
-
     ram: {
-      options: [4, 6, 8, 12, 16, 24].map(value => ({
-        value: String(value),
-        label: `${value} GB`
+      options: [4, 6, 8, 12, 16, 24].map(v => ({
+        value: String(v),
+        label: `${v} GB`
       })),
       selectedId: "ramSelectedLabel",
       menuId: "ramOptions",
       initial: "4"
     },
-
     storage: {
       options: [
         { value: "32", label: "32 GB" },
@@ -593,106 +397,77 @@
   };
 
   function setupCustomDropdowns() {
-    Object.entries(DROPDOWNS).forEach(
-      ([key, config]) => {
-        const menu = $(config.menuId);
-        const selectedLabel = $(config.selectedId);
+    Object.entries(DROPDOWNS).forEach(([key, config]) => {
+      const menu = $(config.menuId);
+      const label = $(config.selectedId);
 
-        if (!menu || !selectedLabel) {
-          console.warn(
-            "Dropdown elements missing:",
-            key
-          );
-          return;
+      if (!menu || !label) return;
+
+      menu.innerHTML = "";
+
+      config.options.forEach(option => {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "select-option";
+        button.dataset.dropdownOption = key;
+        button.dataset.value = String(option.value);
+        button.setAttribute("role", "option");
+        button.textContent = option.label;
+
+        if (String(option.value) === config.initial) {
+          button.classList.add("selected");
         }
 
-        menu.innerHTML = "";
+        menu.appendChild(button);
+      });
 
-        config.options.forEach(option => {
-          const button = document.createElement("button");
+      state.dropdownValues[key] = config.initial;
 
-          button.type = "button";
-          button.className = "select-option";
-          button.dataset.dropdownOption = key;
-          button.dataset.value = option.value;
-          button.setAttribute("role", "option");
-          button.textContent = option.label;
+      const initial = config.options.find(
+        option => String(option.value) === config.initial
+      );
 
-          if (
-            String(option.value) ===
-            String(config.initial)
-          ) {
-            button.classList.add("selected");
-          }
-
-          menu.appendChild(button);
-        });
-
-        state.dropdownValues[key] = config.initial;
-
-        selectedLabel.textContent =
-          config.options.find(
-            option =>
-              String(option.value) ===
-              String(config.initial)
-          ).label;
-      }
-    );
+      label.textContent = initial ? initial.label : config.initial;
+    });
   }
 
   function closeDropdowns() {
-    document
-      .querySelectorAll(".custom-select.open")
-      .forEach(element => {
-        element.classList.remove("open");
+    document.querySelectorAll(".custom-select.open").forEach(el => {
+      el.classList.remove("open");
 
-        const trigger =
-          element.querySelector(".select-trigger");
-
-        if (trigger) {
-          trigger.setAttribute(
-            "aria-expanded",
-            "false"
-          );
-        }
-      });
+      const trigger = el.querySelector(".select-trigger");
+      if (trigger) trigger.setAttribute("aria-expanded", "false");
+    });
   }
 
   function chooseDropdownOption(key, value, label) {
     const config = DROPDOWNS[key];
-
     if (!config) return;
 
-    state.dropdownValues[key] = value;
+    state.dropdownValues[key] = String(value);
 
     const selectedLabel = $(config.selectedId);
+    if (selectedLabel) selectedLabel.textContent = label;
+
     const menu = $(config.menuId);
 
-    if (selectedLabel) {
-      selectedLabel.textContent = label;
-    }
-
     if (menu) {
-      menu
-        .querySelectorAll(".select-option")
-        .forEach(option => {
-          option.classList.toggle(
-            "selected",
-            option.dataset.value === String(value)
-          );
-        });
+      menu.querySelectorAll(".select-option").forEach(option => {
+        option.classList.toggle(
+          "selected",
+          option.dataset.value === String(value)
+        );
+      });
     }
 
     closeDropdowns();
 
-    if (key === "ram" || key === "storage") {
-      if (key === "ram") {
-        state.ramChosen = true;
-      }
+    if (key === "brand") state.brand = String(value);
 
-      if (key === "storage") {
-        state.storageChosen = true;
-      }
+    if (key === "ram" || key === "storage") {
+      if (key === "ram") state.ramChosen = true;
+      if (key === "storage") state.storageChosen = true;
 
       state.scanned = false;
 
@@ -700,26 +475,21 @@
 
       if (result) {
         result.classList.remove("scanned");
-
         result.innerHTML =
           '<span class="scan-dot"></span>' +
           '<span>Selection changed · scan again to continue</span>';
       }
 
-      const nextButton = $("nextSettingsBtn");
-
-      if (nextButton) {
-        nextButton.disabled = true;
-      }
+      const next = $("nextSettingsBtn");
+      if (next) next.disabled = true;
     }
   }
 
+  // ========== GOOGLE FORM FIX ==========
+
   function setupPaymentVisuals() {
     const upi = $("upiValue");
-
-    if (upi) {
-      upi.textContent = CONFIG.upiId;
-    }
+    if (upi) upi.textContent = CONFIG.upiId;
 
     const qr = document.querySelector(
       "#qrPlaceholder .payment-qr"
@@ -731,82 +501,92 @@
 
     const holder = $("googleFormHolder");
 
-    if (holder && CONFIG.googleFormUrl) {
-      holder.innerHTML = "";
-
-      const iframe = document.createElement("iframe");
-
-      iframe.src = CONFIG.googleFormUrl;
-      iframe.title = "Payment verification Google Form";
-      iframe.loading = "lazy";
-      iframe.referrerPolicy =
-        "strict-origin-when-cross-origin";
-
-      holder.appendChild(iframe);
+    if (!holder) {
+      console.error(
+        "ViveX Sensi: #googleFormHolder missing from index.html"
+      );
+      return;
     }
+
+    // Remove the original placeholder.
+    holder.innerHTML = "";
+
+    const iframe = document.createElement("iframe");
+    iframe.src = CONFIG.googleFormUrl;
+    iframe.title = "Payment verification Google Form";
+    iframe.loading = "eager";
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    iframe.style.width = "100%";
+    iframe.style.height = "620px";
+    iframe.style.minHeight = "600px";
+    iframe.style.display = "block";
+    iframe.style.border = "0";
+    iframe.style.background = "#fff";
+    iframe.style.borderRadius = "10px";
+
+    holder.appendChild(iframe);
+
+    // Direct link as a fallback if embedding is blocked.
+    const link = document.createElement("a");
+
+    link.href = CONFIG.googleFormUrl.replace("?embedded=true", "");
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Form not loading? Open the form directly";
+    link.style.display = "block";
+    link.style.padding = "12px";
+    link.style.textAlign = "center";
+    link.style.color = "#D6AD55";
+
+    holder.appendChild(link);
   }
 
+  // ========== CLICK HANDLERS ==========
+
   document.addEventListener("click", event => {
-    const target = event.target;
+    if (!(event.target instanceof Element)) return;
 
-    if (!(target instanceof Element)) return;
-
-    const option = target.closest(
-      "[data-dropdown-option]"
-    );
+    const option = event.target.closest("[data-dropdown-option]");
 
     if (option) {
       chooseDropdownOption(
         option.dataset.dropdownOption,
         option.dataset.value,
-        option.textContent
+        option.textContent.trim()
       );
-
       return;
     }
 
-    if (!target.closest(".custom-select")) {
+    if (!event.target.closest(".custom-select")) {
       closeDropdowns();
     }
 
-    const tab = target.closest("[data-tab]");
+    const tab = event.target.closest("[data-tab]");
 
     if (tab) {
       goTab(tab.dataset.tab);
       return;
     }
 
-    const actionButton = target.closest("[data-action]");
+    const button = event.target.closest("[data-action]");
+    if (!button) return;
 
-    if (!actionButton) return;
-
-    const action = actionButton.dataset.action;
-
-    switch (action) {
+    switch (button.dataset.action) {
       case "open-verify":
         showView("page-verify");
         break;
 
       case "toggle-dropdown": {
-        const wrapper =
-          actionButton.closest(".custom-select");
-
+        const wrapper = button.closest(".custom-select");
         if (!wrapper) break;
 
-        const wasOpen =
-          wrapper.classList.contains("open");
-
+        const wasOpen = wrapper.classList.contains("open");
         closeDropdowns();
 
         if (!wasOpen) {
           wrapper.classList.add("open");
-
-          actionButton.setAttribute(
-            "aria-expanded",
-            "true"
-          );
+          button.setAttribute("aria-expanded", "true");
         }
-
         break;
       }
 
@@ -819,44 +599,28 @@
         break;
 
       case "select-brand":
-        state.brand =
-          state.dropdownValues.brand || "POCO";
-
+        state.brand = state.dropdownValues.brand || "POCO";
         showView("page-scan");
         break;
 
       case "scan-display": {
-        if (
-          !state.ramChosen ||
-          !state.storageChosen
-        ) {
-          const result = $("scanResult");
+        const result = $("scanResult");
+        const next = $("nextSettingsBtn");
 
+        if (!state.ramChosen || !state.storageChosen) {
           if (result) {
+            result.classList.remove("scanned");
             result.innerHTML =
               '<span class="scan-dot"></span>' +
               '<span>Please select both RAM and Storage first</span>';
-
-            result.classList.remove("scanned");
           }
 
-          const nextButton = $("nextSettingsBtn");
-
-          if (nextButton) {
-            nextButton.disabled = true;
-          }
-
+          if (next) next.disabled = true;
           break;
         }
 
         scanDensity();
-
-        const nextButton = $("nextSettingsBtn");
-
-        if (nextButton) {
-          nextButton.disabled = false;
-        }
-
+        if (next) next.disabled = false;
         break;
       }
 
@@ -885,17 +649,7 @@
         break;
 
       case "open-tutorial":
-        if (
-          CONFIG.tutorialUrl ===
-          "https://www.youtube.com/"
-        ) {
-          alert(
-            "Add your tutorial video URL in js/app.js first."
-          );
-        } else {
-          openUrl(CONFIG.tutorialUrl);
-        }
-
+        openUrl(CONFIG.tutorialUrl);
         break;
 
       case "open-youtube":
@@ -908,30 +662,49 @@
     }
   });
 
+  // ========== DESKTOP BLOCK ==========
+
   function checkDesktop() {
-    const desktopBlock = $("desktopBlock");
+    const block = $("desktopBlock");
+    if (!block || !window.matchMedia) return;
 
-    if (!desktopBlock) return;
-
-    const isWide = window.matchMedia(
-      "(min-width: 800px)"
-    ).matches;
-
-    desktopBlock.classList.toggle(
+    block.classList.toggle(
       "hidden",
-      !isWide
+      !window.matchMedia("(min-width: 800px)").matches
     );
   }
 
-  function initializeApp() {
-    setupCustomDropdowns();
-    setupPaymentVisuals();
-    checkDesktop();
+  // ========== INITIALIZATION ==========
 
-    window.addEventListener(
-      "resize",
-      checkDesktop
-    );
+  function initializeApp() {
+    try {
+      setupCustomDropdowns();
+    } catch (error) {
+      console.error("Dropdown initialization error:", error);
+    }
+
+    try {
+      setupPaymentVisuals();
+    } catch (error) {
+      console.error("Google Form initialization error:", error);
+
+      const holder = $("googleFormHolder");
+
+      if (holder) {
+        holder.innerHTML = "";
+
+        const link = document.createElement("a");
+        link.href = CONFIG.googleFormUrl;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "Open payment form";
+
+        holder.appendChild(link);
+      }
+    }
+
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
   }
 
   if (document.readyState === "loading") {
@@ -944,4 +717,3 @@
     initializeApp();
   }
 })();
-        
