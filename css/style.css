@@ -104,3 +104,27 @@ button{cursor:pointer}
 .desktop-card p{color:var(--muted);line-height:1.6;font-size:15px}
 @media(min-width:800px){.app-shell{display:none}.desktop-block{display:grid!important}}
 @media(max-width:360px){.app-shell{padding-left:13px;padding-right:13px}.page-heading h1{font-size:23px}.setting-card{padding:12px 10px}.setting-card strong{font-size:23px}}
+
+/* App-styled dropdowns: avoids Android's external/native selection popup */
+.custom-select{position:relative;width:100%;margin-bottom:4px}
+.select-trigger{width:100%;min-height:48px;padding:12px 14px;border:1px solid #393939;border-radius:11px;background:#0c0c0c;color:var(--text);display:flex;align-items:center;justify-content:space-between;text-align:left;font-weight:600;font-size:14px}
+.select-trigger:focus,.custom-select.open .select-trigger{outline:none;border-color:var(--gold)}
+.select-chevron{color:var(--gold);font-size:20px;line-height:1}
+.select-menu{display:none;position:relative;z-index:20;margin-top:7px;background:#101010;border:1px solid #4a3b20;border-radius:12px;max-height:230px;overflow-y:auto;padding:5px;box-shadow:0 10px 28px #0009}
+.custom-select.open .select-menu{display:block}
+.select-option{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:42px;padding:10px 12px;border:0;border-radius:8px;background:transparent;color:#ddd;text-align:left;font-size:13px}
+.select-option:active,.select-option.selected{background:#2a2110;color:var(--gold)}
+.select-option.selected:after{content:'✓';font-weight:900;color:var(--gold)}
+.btn:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(.5)}
+.form-holder{width:100%;overflow:hidden;border:1px solid #383838;border-radius:12px;background:#0c0c0c;min-height:320px}
+.form-holder iframe{display:block;width:100%;height:620px;border:0;background:#fff}
+.loading-view{min-height:calc(100svh - 190px);display:none;align-items:center;justify-content:center}
+.loading-view.active{display:flex}
+.loader-wrap{text-align:center;width:100%;padding:32px 6px}
+.loader-ring{width:58px;height:58px;border-radius:50%;border:4px solid #302817;border-top-color:var(--gold);animation:spin .8s linear infinite;margin:0 auto 28px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-wrap h1{font-size:25px;line-height:1.25;margin:0 auto 10px;max-width:300px}
+.loader-wrap>p:not(.eyebrow){font-size:12px;line-height:1.5;color:var(--muted);max-width:290px;margin:0 auto}
+.loading-track{height:4px;max-width:250px;background:#242424;border-radius:9px;margin:26px auto 0;overflow:hidden}
+.loading-track span{display:block;height:100%;width:38%;background:var(--gold);border-radius:9px;animation:loadbar 1.5s ease-in-out infinite alternate}
+@keyframes loadbar{from{width:12%;transform:translateX(0)}to{width:72%;transform:translateX(38%)}}
