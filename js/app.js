@@ -12,9 +12,9 @@
     // Paste your Google Form URL here:
     googleFormUrl: "",
     // Paste your UPI ID here:
-    upiId: "ADD-YOUR-UPI@BANK",
+    upiId: "deadlyvivek018@okhdfcbank",
     // If you have a payment QR image, put it in assets and set this to its path, e.g. "assets/payment-qr.png":
-    qrImagePath: ""
+    qrImagePath: "assets/qr.png": ""
   };
 
   const BRANDS = [
