@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080808">
+  <title>ViveX Sensi</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="desktopBlock" class="desktop-block hidden">
+    <div class="desktop-card">
+      <div class="brand-mark">VX</div>
+      <h1>ViveX Sensi</h1>
+      <p>ViveX Sensi is available on mobile devices only.</p>
+      <p>Please open this website on your phone. If you're using a phone, turn off “Desktop site” in your browser.</p>
+    </div>
+  </div>
+
+  <main class="app-shell" id="appShell">
+    <header class="top-header">
+      <div class="header-mark">⌖</div>
+      <div>
+        <div class="header-title">ViveXhere</div>
+        <div class="header-subtitle">Your Sensi Guide</div>
+      </div>
+    </header>
+
+    <section class="view active" id="tab-sensi">
+      <div class="home-content">
+        <div class="logo-frame">
+          <!-- Add your own logo file as assets/logo.png -->
+          <img src="assets/logo.png" alt="ViveX Sensi logo" class="user-logo"
+               onerror="this.style.display='none';document.getElementById('logoFallback').style.display='grid';">
+          <div id="logoFallback" class="logo-fallback">VX</div>
+        </div>
+        <p class="eyebrow">DEVICE-SPECIFIC SETTINGS</p>
+        <h1 class="hero-title">ViveX <span>SENSI BOT</span></h1>
+        <p class="hero-description">Your Gaming Settings, All in one place.</p>
+        <button class="btn btn-gold btn-large" data-action="open-verify">Get Sensi <span>→</span></button>
+        <p class="micro-copy">Made for your device. Tuned for your game.</p>
+      </div>
+    </section>
+
+    <section class="view" id="tab-code">
+      <div class="page-heading">
+        <p class="eyebrow">PREMIUM ACCESS</p>
+        <h1>Get Verification Code</h1>
+        <p>Unlock all ViveX Sensi features.</p>
+      </div>
+      <div class="panel offer-panel">
+        <div class="offer-label">LIMITED TIME OFFER</div>
+        <div class="price-line"><span class="old-price">₹79</span><strong>₹49</strong></div>
+        <p class="muted">One-time payment for premium access</p>
+        <div class="payment-placeholder" id="qrPlaceholder">
+          <div class="qr-symbol">▦</div>
+          <strong>Your payment QR goes here</strong>
+          <small>Add your QR image in assets and update the image path in app.js.</small>
+        </div>
+        <div class="upi-row">
+          <div>
+            <span class="field-label">UPI ID</span>
+            <strong id="upiValue">ADD-YOUR-UPI@BANK</strong>
+          </div>
+        </div>
+        <button class="btn btn-gold btn-full" data-action="open-payment-form">Payment Done</button>
+        <p class="tiny-note">Pay exactly ₹49. Verify payment details carefully before submitting.</p>
+      </div>
+      <div class="panel warning-panel">
+        <strong>Before you pay</strong>
+        <p>Payment is checked manually. Your verification code will be emailed after approval, within 24 hours.</p>
+      </div>
+    </section>
+
+    <section class="view" id="tab-guide">
+      <div class="page-heading">
+        <p class="eyebrow">PLEASE READ</p>
+        <h1>Warning & Tutorials</h1>
+        <p>Important information before using ViveX Sensi.</p>
+      </div>
+      <div class="panel warning-panel prominent">
+        <div class="warning-icon">!</div>
+        <h2>Important Warning</h2>
+        <p>Do not clear your browser data or website storage after activating your code. Clearing it may remove your access, and recovery will not be available. You may need to purchase a new code.</p>
+      </div>
+      <div class="panel tutorial-panel">
+        <div class="tutorial-icon">▶</div>
+        <div class="tutorial-copy">
+          <h2>How to use ViveX Sensi</h2>
+          <p>Watch the step-by-step tutorial on YouTube.</p>
+        </div>
+        <button class="btn btn-outline btn-full" data-action="open-tutorial">Watch Tutorial ↗</button>
+      </div>
+    </section>
+
+    <section class="view" id="tab-connects">
+      <div class="page-heading">
+        <p class="eyebrow">STAY CONNECTED</p>
+        <h1>Connects</h1>
+        <p>Follow ViveXhere on social media.</p>
+      </div>
+      <button class="social-link panel" data-action="open-youtube">
+        <span class="social-icon">▶</span><span class="social-text"><strong>YouTube</strong><small>ViveXhere</small></span><span class="external">↗</span>
+      </button>
+      <button class="social-link panel" data-action="open-instagram">
+        <span class="social-icon instagram-icon">◎</span><span class="social-text"><strong>Instagram</strong><small>@its.vivexhere</small></span><span class="external">↗</span>
+      </button>
+    </section>
+
+    <!-- Internal pages; bottom navigation remains fixed -->
+    <section class="view inner-view" id="page-verify">
+      <button class="back-btn" data-action="back">← Back</button>
+      <div class="page-heading">
+        <p class="eyebrow">PREMIUM ACCESS</p>
+        <h1>Enter Verification Code</h1>
+        <p>Enter the code sent to your email.</p>
+      </div>
+      <div class="panel">
+        <label class="field-label" for="verificationCode">Verification Code</label>
+        <input id="verificationCode" class="text-input" type="text" placeholder="Enter verification code" autocomplete="one-time-code" maxlength="100">
+        <button class="btn btn-gold btn-full" data-action="verify-code">Verify Code</button>
+        <p id="verifyMessage" class="form-message" role="status"></p>
+        <div class="subtle-divider"></div>
+        <p class="muted centered">Don't have a code yet?</p>
+        <button class="btn btn-outline btn-full" data-action="go-code-tab">Get Verification Code</button>
+      </div>
+    </section>
+
+    <section class="view inner-view" id="page-device">
+      <button class="back-btn" data-action="back">← Back</button>
+      <div class="page-heading">
+        <p class="eyebrow">STEP 1 OF 3</p>
+        <h1>Select Your Device</h1>
+        <p>Choose your phone brand.</p>
+      </div>
+      <div class="panel">
+        <label class="field-label" for="brandSelect">Phone Brand</label>
+        <select id="brandSelect" class="text-input"></select>
+        <button class="btn btn-gold btn-full" data-action="select-brand">Select</button>
+      </div>
+    </section>
+
+    <section class="view inner-view" id="page-scan">
+      <button class="back-btn" data-action="back">← Back</button>
+      <div class="page-heading">
+        <p class="eyebrow">STEP 2 OF 3</p>
+        <h1>Device Details</h1>
+        <p>Select your RAM and storage, then scan the display.</p>
+      </div>
+      <div class="panel">
+        <label class="field-label" for="ramSelect">RAM</label>
+        <select id="ramSelect" class="text-input">
+          <option value="4">4 GB</option><option value="6">6 GB</option><option value="8">8 GB</option>
+          <option value="12">12 GB</option><option value="16">16 GB</option><option value="24">24 GB</option>
+        </select>
+        <label class="field-label field-spaced" for="storageSelect">Storage</label>
+        <select id="storageSelect" class="text-input">
+          <option value="32">32 GB</option><option value="64">64 GB</option><option value="128" selected>128 GB</option>
+          <option value="256">256 GB</option><option value="512">512 GB</option><option value="1024">1 TB</option>
+        </select>
+        <div class="scan-result" id="scanResult">
+          <span class="scan-dot"></span><span>Display scan not run yet</span>
+        </div>
+        <button class="btn btn-outline btn-full" data-action="scan-display">Scan Display</button>
+        <button class="btn btn-gold btn-full" data-action="show-results">Next →</button>
+        <p class="tiny-note">Browser scan estimates display values; it cannot reliably read your phone's actual system DPI.</p>
+      </div>
+    </section>
+
+    <section class="view inner-view" id="page-results">
+      <button class="back-btn" data-action="back">← Back</button>
+      <div class="page-heading">
+        <p class="eyebrow">YOUR DEVICE PROFILE</p>
+        <h1>Sensi Results</h1>
+        <p id="resultDeviceName">Your device settings</p>
+      </div>
+      <div class="device-summary panel">
+        <div><span>Brand</span><strong id="resultBrand">—</strong></div>
+        <div><span>RAM</span><strong id="resultRam">—</strong></div>
+        <div><span>Storage</span><strong id="resultStorage">—</strong></div>
+        <div><span>Estimated PPI</span><strong id="resultPpi">—</strong></div>
+      </div>
+      <div class="settings-grid">
+        <div class="setting-card"><span>General</span><strong id="generalValue">—</strong></div>
+        <div class="setting-card"><span>Red Dot</span><strong id="redDotValue">—</strong></div>
+        <div class="setting-card"><span>2x Scope</span><strong id="twoXValue">—</strong></div>
+        <div class="setting-card"><span>4x Scope</span><strong id="fourXValue">—</strong></div>
+        <div class="setting-card"><span>Sniper</span><strong id="sniperValue">—</strong></div>
+        <div class="setting-card"><span>Free Look</span><strong id="freeLookValue">—</strong></div>
+        <div class="setting-card"><span>Fire Button Size</span><strong id="fireValue">—</strong></div>
+        <div class="setting-card"><span>Recommended DPI</span><strong id="dpiValue">—</strong></div>
+      </div>
+      <button class="btn btn-gold btn-full boost-button" data-action="open-boost">Performance Boost →</button>
+      <p class="tiny-note">These are recommendations, not guaranteed in-game results. Adjust to your comfort.</p>
+    </section>
+
+    <section class="view inner-view" id="page-boost">
+      <button class="back-btn" data-action="back">← Back</button>
+      <div class="page-heading">
+        <p class="eyebrow">OPTIONAL OPTIMIZATION</p>
+        <h1>Performance Boost</h1>
+        <p>Suggested settings to review on your phone.</p>
+      </div>
+      <div class="panel boost-list">
+        <div class="boost-row"><span>Display Size</span><strong>Small</strong></div>
+        <div class="boost-row"><span>Dwell Timing</span><strong>0.01</strong></div>
+        <div class="boost-row"><span>Graphics Driver</span><strong>System Driver</strong></div>
+        <div class="boost-row"><span>Animation Scale</span><strong>0.5x (if available)</strong></div>
+        <div class="boost-row"><span>Background Apps</span><strong>Close unused apps</strong></div>
+        <div class="boost-row"><span>Game Graphics</span><strong>Smooth (if preferred)</strong></div>
+        <div class="boost-row"><span>Battery Mode</span><strong>Performance (if available)</strong></div>
+      </div>
+      <p class="tiny-note">Options vary by Android version and phone brand. This page only displays suggestions; it does not change system settings automatically.</p>
+    </section>
+
+    <section class="view inner-view" id="page-payment-form">
+      <button class="back-btn" data-action="back">← Back</button>
+      <div class="page-heading">
+        <p class="eyebrow">PAYMENT CONFIRMATION</p>
+        <h1>Submit Payment Details</h1>
+        <p>Enter the email and UTR number used for your payment.</p>
+      </div>
+      <div class="panel form-panel">
+        <div class="form-placeholder">
+          <strong>Google Form placeholder</strong>
+          <p>Replace this panel with your Google Form embed URL in js/app.js.</p>
+        </div>
+        <button class="btn btn-gold btn-full" data-action="open-google-form">Open Payment Form ↗</button>
+        <p class="tiny-note">After submitting the form, return here and read the confirmation message.</p>
+        <button class="btn btn-outline btn-full" data-action="payment-submitted">I Submitted the Form</button>
+      </div>
+    </section>
+
+    <section class="view inner-view" id="page-payment-done">
+      <div class="success-mark">✓</div>
+      <div class="page-heading centered">
+        <h1>Payment Details Submitted</h1>
+        <p>Your payment will be checked manually. If approved, your verification code will be emailed within 24 hours. Then open the Sensi tab and enter your code.</p>
+      </div>
+      <button class="btn btn-gold btn-full" data-action="go-home">Return to Home</button>
+    </section>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item active" data-tab="sensi"><span class="nav-icon">⌖</span><span>Sensi</span></button>
+      <button class="nav-item" data-tab="code"><span class="nav-icon">⚿</span><span>Get Code</span></button>
+      <button class="nav-item" data-tab="guide"><span class="nav-icon">⚠</span><span>Guide</span></button>
+      <button class="nav-item" data-tab="connects"><span class="nav-icon">◎</span><span>Connects</span></button>
+    </nav>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
