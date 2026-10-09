@@ -128,3 +128,7 @@ button{cursor:pointer}
 .loading-track{height:4px;max-width:250px;background:#242424;border-radius:9px;margin:26px auto 0;overflow:hidden}
 .loading-track span{display:block;height:100%;width:38%;background:var(--gold);border-radius:9px;animation:loadbar 1.5s ease-in-out infinite alternate}
 @keyframes loadbar{from{width:12%;transform:translateX(0)}to{width:72%;transform:translateX(38%)}}
+/* Payment QR: show the actual image without changing the existing card design. */
+.payment-placeholder{min-height:0;overflow:hidden}
+.payment-qr{display:block;width:220px;max-width:100%;height:auto;max-height:260px;object-fit:contain;border-radius:8px;background:#fff}
+.qr-load-error{font-size:11px;line-height:1.5;color:var(--muted);margin:0;overflow-wrap:anywhere}
