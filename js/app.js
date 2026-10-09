@@ -14,7 +14,7 @@
     // Paste your UPI ID here:
     upiId: "deadlyvivek018@okhdfcbank",
     // If you have a payment QR image, put it in assets and set this to its path, e.g. "assets/payment-qr.png":
-    qrImagePath: "assets/qr.png": ""
+    qrImagePath: "assets/qr.png"
   };
 
   const BRANDS = [
@@ -294,25 +294,27 @@
   }
 
   function setupPaymentVisuals() {
-    $("upiValue").textContent = CONFIG.upiId;
+    // Keep the visible HTML fallback in place, and use the same UPI value here.
+    const upi = $("upiValue");
+    if (upi) upi.textContent = CONFIG.upiId;
+
+    // The QR is also present directly in index.html so it still loads if JS is delayed.
+    const qr = document.querySelector("#qrPlaceholder .payment-qr");
+    if (qr && CONFIG.qrImagePath) {
+      qr.src = CONFIG.qrImagePath;
+    }
+
     if (CONFIG.googleFormUrl) {
       const holder = $("googleFormHolder");
-      holder.innerHTML = "";
-      const iframe = document.createElement("iframe");
-      iframe.src = CONFIG.googleFormUrl;
-      iframe.title = "Payment verification Google Form";
-      iframe.loading = "lazy";
-      iframe.referrerPolicy = "strict-origin-when-cross-origin";
-      holder.appendChild(iframe);
-    }
-    if (CONFIG.qrImagePath) {
-      const placeholder = $("qrPlaceholder");
-      placeholder.innerHTML = "";
-      const img = document.createElement("img");
-      img.src = CONFIG.qrImagePath;
-      img.alt = "Payment QR code";
-      img.style.cssText = "max-width:180px;width:100%;height:auto;object-fit:contain;border-radius:8px";
-      placeholder.appendChild(img);
+      if (holder) {
+        holder.innerHTML = "";
+        const iframe = document.createElement("iframe");
+        iframe.src = CONFIG.googleFormUrl;
+        iframe.title = "Payment verification Google Form";
+        iframe.loading = "lazy";
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+        holder.appendChild(iframe);
+      }
     }
   }
 
