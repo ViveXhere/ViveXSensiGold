@@ -10,9 +10,7 @@
     youtubeUrl: "https://www.youtube.com/@ViveXhere",
     instagramUrl: "https://www.instagram.com/its.vivexhere/",
     // Paste your Google Form URL here:
-    
-googleFormUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdZjtz_CZodGAsSfiY4nw25uvLCd1I411cHp-zB4v34juRq3A/viewform?embedded=true",
-",
+    googleFormUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdZjtz_CZodGAsSfiY4nw25uvLCd1I411cHp-zB4v34juRq3A/viewform?embedded=true",
     // Paste your UPI ID here:
     upiId: "deadlyvivek018@okhdfcbank",
     // If you have a payment QR image, put it in assets and set this to its path, e.g. "assets/payment-qr.png":
