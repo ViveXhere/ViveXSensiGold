@@ -134,8 +134,11 @@
         <p>Choose your phone brand.</p>
       </div>
       <div class="panel">
-        <label class="field-label" for="brandSelect">Phone Brand</label>
-        <select id="brandSelect" class="text-input"></select>
+        <label class="field-label">Phone Brand</label>
+        <div class="custom-select" id="brandDropdown" data-dropdown="brand">
+          <button type="button" class="select-trigger" data-action="toggle-dropdown" aria-expanded="false"><span id="brandSelectedLabel">POCO</span><span class="select-chevron">⌄</span></button>
+          <div class="select-menu" id="brandOptions" role="listbox"></div>
+        </div>
         <button class="btn btn-gold btn-full" data-action="select-brand">Select</button>
       </div>
     </section>
@@ -148,22 +151,32 @@
         <p>Select your RAM and storage, then scan the display.</p>
       </div>
       <div class="panel">
-        <label class="field-label" for="ramSelect">RAM</label>
-        <select id="ramSelect" class="text-input">
-          <option value="4">4 GB</option><option value="6">6 GB</option><option value="8">8 GB</option>
-          <option value="12">12 GB</option><option value="16">16 GB</option><option value="24">24 GB</option>
-        </select>
-        <label class="field-label field-spaced" for="storageSelect">Storage</label>
-        <select id="storageSelect" class="text-input">
-          <option value="32">32 GB</option><option value="64">64 GB</option><option value="128" selected>128 GB</option>
-          <option value="256">256 GB</option><option value="512">512 GB</option><option value="1024">1 TB</option>
-        </select>
+        <label class="field-label">RAM</label>
+        <div class="custom-select" id="ramDropdown" data-dropdown="ram">
+          <button type="button" class="select-trigger" data-action="toggle-dropdown" aria-expanded="false"><span id="ramSelectedLabel">4 GB</span><span class="select-chevron">⌄</span></button>
+          <div class="select-menu" id="ramOptions" role="listbox"></div>
+        </div>
+        <label class="field-label field-spaced">Storage</label>
+        <div class="custom-select" id="storageDropdown" data-dropdown="storage">
+          <button type="button" class="select-trigger" data-action="toggle-dropdown" aria-expanded="false"><span id="storageSelectedLabel">128 GB</span><span class="select-chevron">⌄</span></button>
+          <div class="select-menu" id="storageOptions" role="listbox"></div>
+        </div>
         <div class="scan-result" id="scanResult">
           <span class="scan-dot"></span><span>Display scan not run yet</span>
         </div>
         <button class="btn btn-outline btn-full" data-action="scan-display">Scan Display</button>
-        <button class="btn btn-gold btn-full" data-action="show-results">Next →</button>
+        <button class="btn btn-gold btn-full" data-action="show-results" id="nextSettingsBtn" disabled>Next →</button>
         <p class="tiny-note">Browser scan estimates display values; it cannot reliably read your phone's actual system DPI.</p>
+      </div>
+    </section>
+
+    <section class="view inner-view loading-view" id="page-loading" aria-live="polite">
+      <div class="loader-wrap">
+        <div class="loader-ring"></div>
+        <p class="eyebrow">PLEASE WAIT</p>
+        <h1>Finding Best Settings For You</h1>
+        <p>Analyzing your selected device and display estimate…</p>
+        <div class="loading-track"><span></span></div>
       </div>
     </section>
 
@@ -221,11 +234,12 @@
         <p>Enter the email and UTR number used for your payment.</p>
       </div>
       <div class="panel form-panel">
-        <div class="form-placeholder">
-          <strong>Google Form placeholder</strong>
-          <p>Replace this panel with your Google Form embed URL in js/app.js.</p>
+        <div class="form-holder" id="googleFormHolder">
+          <div class="form-placeholder" id="formPlaceholder">
+            <strong>Payment form will appear here</strong>
+            <p>Add your Google Form embed URL in js/app.js to show the form inside this box.</p>
+          </div>
         </div>
-        <button class="btn btn-gold btn-full" data-action="open-google-form">Open Payment Form ↗</button>
         <p class="tiny-note">After submitting the form, return here and read the confirmation message.</p>
         <button class="btn btn-outline btn-full" data-action="payment-submitted">I Submitted the Form</button>
       </div>
