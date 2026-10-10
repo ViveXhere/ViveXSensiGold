@@ -1,4 +1,3 @@
-
 (() => {
   "use strict";
 
@@ -536,7 +535,7 @@
     link.style.display = "block";
     link.style.padding = "12px";
     link.style.textAlign = "center";
-    link.style.color = "#D6AD55";
+    link.style.color = "#DC143C";
 
     holder.appendChild(link);
   }
