@@ -1,6 +1,6 @@
 (() => {
   const chat = document.getElementById('chat');
-  const VERIFY_API = 'https://script.google.com/macros/s/AKfycbwW7iwNSA7kLXKqbEwrzSDlHw3vRtHJ_xJJ5GMMPN8eMN4kjj9sJJJNhpOK6_jZOytuEw/exec';
+  const VERIFY_API = 'https://script.google.com/macros/s/AKfycbwxDbGj1X-J5ynBetedz5Gf1uB8QLcCD891EAbp7H3SN-WMFVIjc177kmuAmI9PNZUAuA/exec';
   const PAYMENT_MESSAGE_TYPE = 'VIVEX_PAYMENT_RESULT';
   let userData = {brand:'',ram:'',storage:'',style:'Balanced'};
   let displayMetrics = {width:0,height:0,ratio:'Unavailable',ppi:0,dpr:1,scanned:false};
