@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<title>ViveX Sensi BOT</title>
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+<div class="app">
+<header class="header"><div class="logo">⌖</div><div><div class="head-title">ViveXhere</div><div class="sub">ViveX Sensi BOT</div><div class="online">Ready to assist</div></div><div class="pill">VIVEX</div></header>
+<main class="screen-area" id="screenArea">
+<section class="screen home-screen" id="homeScreen">
+<div class="hero-logo">⌖</div><div class="eyebrow">YOUR GAMING ASSISTANT</div>
+<h1 class="home-title">ViveX <span>SENSI BOT</span></h1>
+<p class="home-sub">Your gaming settings, all in one place. Start your device setup or explore the tutorials.</p>
+<div class="home-actions">
+<button class="home-action" id="homeGetSensi"><span class="home-icon">🎯</span><span><strong>Get Sensi</strong><small>Open the full Sensi BOT</small></span><span class="action-arrow">›</span></button>
+<button class="home-action" id="homeGetCode"><span class="home-icon">🔑</span><span><strong>Get Verification Code</strong><small>Open the bot to request an access code</small></span><span class="action-arrow">›</span></button>
+<button class="home-action" id="homeVerificationTutorial"><span class="home-icon">▶</span><span><strong>Verification Tutorial</strong><small>Watch how to verify and get started</small></span><span class="action-arrow">↗</span></button>
+<button class="home-action" id="homeSensiTutorial"><span class="home-icon">▷</span><span><strong>Sensi Tutorial</strong><small>Watch how to use your sensitivity settings</small></span><span class="action-arrow">↗</span></button>
+</div></section>
+<section class="screen hidden" id="botScreen"><div class="chat" id="chat" aria-live="polite"></div></section>
+<section class="screen hidden" id="guideScreen">
+<div class="section-title">Guide & Connect</div><p class="section-sub">Follow ViveXhere for tutorials, updates and Free Fire tips.</p>
+<div class="social-grid"><a class="social-link" href="https://www.youtube.com/@ViveXhere" target="_blank" rel="noopener noreferrer"><span>▶</span> YouTube</a><a class="social-link" href="https://www.instagram.com/its.vivexhere/" target="_blank" rel="noopener noreferrer"><span>◎</span> Instagram</a></div>
+<div class="info-card" id="howItWorks"><h3>⚙️ How It Works</h3><ul><li>Enter your verification code to unlock the setup.</li><li>Select your phone brand, RAM and storage.</li><li>Run the display scan for resolution, aspect ratio and estimated PPI.</li><li>Choose your preferred sensitivity style and review the displayed suggestions.</li></ul><p>Sensitivity, fire-button and DPI values now use the calculation logic adapted from the previous website. It is a heuristic recommendation, not a validated device-physics model. Display measurements are browser estimates. Payment submission and access-code verification are still demo-only and must be connected to a tested backend before launch.</p></div>
+<div class="info-card warning-card"><h3 class="warning-title">⚠ WARNING</h3><p>ViveX Sensi BOT provides settings suggestions only. It does not modify Free Fire game files or automatically change your phone's system settings.</p><p>Results are not guaranteed headshots or wins. Your control, practice and personal preferences still matter. Device options can vary; use only settings you understand and can safely restore.</p><p>Never share your UPI PIN, bank OTP or other confidential banking details in a payment form.</p></div>
+</section></main>
+<nav class="bottom-nav" aria-label="Main navigation">
+<button class="nav-item" id="navBot"><span class="nav-icon">▣</span><span>Sensi BOT</span></button>
+<button class="nav-item active" id="navHome"><span class="nav-icon">⌂</span><span>Home</span></button>
+<button class="nav-item" id="navGuide"><span class="nav-icon">☷</span><span>Guide</span></button>
+</nav></div>
+<script src="js/app.js" defer></script>
+</body>
+</html>
